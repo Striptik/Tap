@@ -1,0 +1,17 @@
+{ 
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ],
+    "flow",
+    "es2015"
+  ],
+  "plugins": [
+    "inline-dotenv"
+  ]
+}

@@ -1,0 +1,17 @@
+[ignore]
+node_modules/
+package.json
+package-lock.json
+.*/build/.*
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+all=false
+emoji=true
+include_warnings=true
+server.max_workers=2
