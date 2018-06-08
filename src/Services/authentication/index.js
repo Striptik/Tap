@@ -6,6 +6,5 @@ const { authFB } = require('./fb');
 module.exports = {
   setAuthentication: (passport) => {
     authJwt(passport);
-    authFB(passport);
   },
 };

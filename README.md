@@ -1,8 +1,9 @@
 # Tap
 Mini Project with MEAN stack
 
-# API-starter
-Boilerplate for node API with good architecture and principals require package (Express, mongoose, passport, eslint-airbnb, helmet, cookie parser, babel) made with ES6 (still with CommonJS, waiting for node native support).
+# Security
+
+
 
 
 ## How does it work ?

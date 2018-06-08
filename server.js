@@ -48,12 +48,12 @@ const init = () => {
   db.initMongooseClient();
 
   // #ForestAdmin
-  app.use(forest.init({
-    modelsDir: './src',
-    envSecret: process.env.FOREST_ENV_SECRET,
-    authSecret: process.env.FOREST_AUTH_SECRET,
-    mongoose, // The mongoose database connection.
-  }));
+  // app.use(forest.init({
+  //   modelsDir: './src',
+  //   envSecret: process.env.FOREST_ENV_SECRET,
+  //   authSecret: process.env.FOREST_AUTH_SECRET,
+  //   mongoose, // The mongoose database connection.
+  // }));
 
   // #Use path to add views
   app.set('view engine', 'pug');

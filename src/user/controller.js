@@ -16,7 +16,6 @@ const rs = require('randomstring');
  */
 const newUser = (({ email, password, firstname, lastname }) =>
   new Promise(async (resolve, reject) => {
-    // #Maybe unash some variables;
 
     // #Check definition of every variables
     if (typeof email !== 'string' || typeof password !== 'string' ||
@@ -35,12 +34,57 @@ const newUser = (({ email, password, firstname, lastname }) =>
       });
     }
 
-    // Validate the variables provided
-    // Email : regexp email 
-    // Password : unhash and check size, minCharacter ..
-    // firstname : only alphabetics
-    // lastname : only alphabetics
+    // Complex email regexp 
+    if (!(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email))) {
+      logger.error('Email provided is not a valid email', {
+        email,
+        tags: ['user', 'createUser', 'create', 'validation', 'email'],
+      });
+      return reject({
+        message: 'Email provided is not a valid email',
+        err: true,
+        data: null,
+      });
+    }
 
+    // Only alpha (not accent) and space/dash characters are allowed
+    if (!(/^[A-Za-z \-]+$/.test(firstname))) {
+      logger.error('Firstname needs to contain only alphabetic numbers', {
+        firstname,
+        tags: ['user', 'createUser', 'create', 'validation', 'firstname'],
+      });
+      return reject({
+        message: 'Firstname needs to contain only characters, space and - (numbers, special chars and accents letter are not allowed, Sorry)',
+        err: true,
+        data: null,
+      });
+    }
+
+    // Only alpha (not accent) and space/dash characters are allowed
+    if (!(/^[A-Za-z \-]+$/.test(lastname))) {
+      logger.error('Lastname needs to contain only alphabetic numbers', {
+        lastname,
+        tags: ['user', 'createUser', 'create', 'validation', 'lastname'],
+      });
+      return reject({
+        message: 'Lastname needs to contain only characters, space and - (numbers, special chars and accents letter are not allowed, Sorry)',
+        err: true,
+        data: null,
+      });
+    }
+
+    // At least one digit
+    if (password.length < 8 || !(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/).test(password)) {
+      logger.error('Password does not contain at least one lower/upper/special/digit character.', {
+        password,
+        tags: ['user', 'createUser', 'create', 'validation', 'password'],
+      });
+      return reject({
+        message: 'Password needs to contain at least one lower, upper, numeric and special character',
+        err: true,
+        data: null,
+      });
+    }
 
     // Use static assignation to control all the properties added
     const newUser = new User();
@@ -57,11 +101,10 @@ const newUser = (({ email, password, firstname, lastname }) =>
       return reject({
         message: 'Error when trying to create a password',
         err: ret.err,
-        data: ret.data,
       });
     }
     // #Add
-    newUser.auth.hash = ret.data;
+    newUser.hash = ret.data;
 
     // #Saving data
     newUser.save((err, user) => {

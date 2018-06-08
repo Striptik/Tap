@@ -1,6 +1,6 @@
 
 const winston = require('winston');
-require('winston-loggly-bulk');
+// require('winston-loggly-bulk');
 
 // #Remove previous logger console
 winston.remove(winston.transports.Console);

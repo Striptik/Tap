@@ -18,16 +18,8 @@ const UserSchema = new Schema({
     lowercase: true,
     unique: true,
   },
-  auth: {
-    hash: {
-      type: String,
-    },
-    reset: {
-      type: String,
-    },
-    resetExp: {
-      type: Date,
-    },
+  hash: {
+    type: String,
   },
   firstname: {
     type: String,
@@ -79,7 +71,7 @@ UserSchema.methods.setPassword = function setPass(password) {
 
 UserSchema.methods.checkPassword = function checkPass(password) {
   return new Promise((resolve, reject) => {
-    bcrypt.compare(password, this.auth.hash, (err, data) => {
+    bcrypt.compare(password, this.hash, (err, data) => {
       if (err) {
         return reject({ data: null, err });
       }
