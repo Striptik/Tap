@@ -2,7 +2,6 @@ const logger = require('../Services/logger');
 const hash = require('../Services/hash');
 const User = require('./model');
 const { sendResetMail } = require('../Services/mailer');
-
 const rs = require('randomstring');
 
 
@@ -73,7 +72,7 @@ const newUser = (({ email, password, firstname, lastname }) =>
       });
     }
 
-    // At least one digit
+    // At least one digit, lower and upper characer and special character
     if (password.length < 8 || !(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/).test(password)) {
       logger.error('Password does not contain at least one lower/upper/special/digit character.', {
         password,
@@ -264,7 +263,6 @@ const getUserBy = ((key, value) =>
     });
   })
 );
-
 
 const resetPassword = (email =>
   new Promise((resolve, reject) => {
