@@ -60,13 +60,13 @@ const newUser = (({ email, password, firstname, lastname }) =>
     }
 
     // Only alpha (not accent) and space/dash characters are allowed
-    if (!(/^[A-Za-z \-]+$/.test(lastname))) {
+    if (!(/^[A-Za-z \-éàîêôïöôè]+$/.test(lastname))) {
       logger.error('Lastname needs to contain only alphabetic numbers', {
         lastname,
         tags: ['user', 'createUser', 'create', 'validation', 'lastname'],
       });
       return reject({
-        message: 'Lastname needs to contain only characters, space and - (numbers, special chars and accents letter are not allowed, Sorry)',
+        message: 'Lastname needs to contain only characters, space and - (numbers, special chars and accents letters are not allowed, Sorry)',
         err: true,
         data: null,
       });
@@ -85,9 +85,7 @@ const newUser = (({ email, password, firstname, lastname }) =>
       });
     }
 
-    // Use static assignation to control all the properties added
     const newUser = new User();
-
     newUser.email = email;
     newUser.firstname = firstname;
     newUser.lastname = lastname;
@@ -102,7 +100,7 @@ const newUser = (({ email, password, firstname, lastname }) =>
         err: ret.err,
       });
     }
-    // #Add
+    // #Add Hash
     newUser.hash = ret.data;
 
     // #Saving data
@@ -124,9 +122,10 @@ const newUser = (({ email, password, firstname, lastname }) =>
       logger.info('User created', {
         user,
       });
+      const token = user.generateJwt();
       return resolve({
         error: null,
-        data: user,
+        data: { user, token },
         message: 'User created',
       });
     });
@@ -264,85 +263,9 @@ const getUserBy = ((key, value) =>
   })
 );
 
-const resetPassword = (email =>
-  new Promise((resolve, reject) => {
-    // #Create token
-    const reset = rs.generate({
-      length: 12,
-      charset: 'alphabetic',
-    });
-    // #Getting the user with the email
-    User.getUserWithEmail(email, async (err, user) => {
-      if (err || !user) {
-        logger.error(`No user find with the email ${email}, or error during find`, {
-          err,
-          user,
-          email,
-          tags: ['user', 'getUserWithEmail', 'resetPassword', 'mongoose'],
-        });
-        return reject({
-          err,
-          data: user,
-          message: `No User find with this email ${email}`,
-        });
-      }
-
-      // #Encrypt reset token
-      const ret = await user.hashResetToken(reset);
-      if (ret.err !== null || ret.data === null) {
-        logger.error('Unable to create a reset token reset password ', {
-          ret,
-          user,
-        });
-        return reject({
-          message: 'Error when trying to create a reset token',
-          err: ret.err,
-          data: ret.data,
-        });
-      }
-
-      // #Store token and expiration in the user 
-      user.auth.reset = ret.data;
-      user.auth.resetExp = Date.now() + 1200000; // 10 minutes
-      user.save((err) => {
-        if (err) {
-          logger.error('Error during saving the resetPassword', {
-            err,
-            user,
-            tags: ['user', 'resetPassword', 'reset', 'mongoose'],
-          });
-          return reject({
-            message: 'Error during saving the reset token',
-            err,
-            data: null,
-          });
-        }
-        // #Create the url to reset password
-        const url = `${process.env.FRONT_DOMAIN}resetPassword?code=${reset}`;
-        // #Send it via mail
-        sendResetMail(email, url)
-          .then((message) => {
-            logger.info(`Reset Token for user ${email}`, {
-              user,
-              url,
-            });
-            return resolve(message);
-          })
-          .catch((err) => {
-            logger.error(`Reset Token for user ${email} Failed`, {
-              err,
-              url,
-            });
-            return reject(err);
-          });
-      });
-    });
-  })
-);
 
 module.exports = {
   newUser,
   getUserBy,
   login,
-  resetPassword,
 };

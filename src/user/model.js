@@ -1,4 +1,3 @@
-
 // #User Schema
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
@@ -29,17 +28,14 @@ const UserSchema = new Schema({
     type: String,
     default: null,
   },
+  taps: [{
+    score: Number,
+    tapId: String,
+    created: Date,
+  }],
 }, {
-  collection: 'users', // #Define the name of the collection
-  strict: true,
-  timestamps: true,
-});
-
-
-// #Define Methods (not with big Arrow =>)
-UserSchema.methods.sayHello = function sayHello() {
-  console.log(`Hello, my name is ${this.firstname}!\n`);
-};
+    timestamps: true,
+  });
 
 UserSchema.methods.setPassword = function setPass(password) {
   return new Promise((resolve, reject) => {
@@ -86,59 +82,21 @@ UserSchema.methods.checkPassword = function checkPass(password) {
 UserSchema.methods.generateJwt = function generateJwt() {
   const expiry = new Date();
   // #21 days to expiration date for jwt
-  expiry.setDate(expiry.getDate() + 1);
+  expiry.setDate(expiry.getDate() + 2);
 
   return jwt.sign({
     _id: this._id,
     email: this.email,
     firstname: this.firstname,
     lastname: this.lastname,
-    expiresIn: '10s', // FOR JWT
+    // expiresIn: '10s', // FOR JWT
     exp: parseInt(expiry.getTime() / 1000, 10),
   }, process.env.JWT_SECRET);
 };
 
-UserSchema.methods.hashResetToken = function hashRT(token) {
-  return new Promise((resolve, reject) => {
-    bcrypt.genSalt(RESET_SALT_FACTOR, (err, salt) => {
-      if (err) {
-        logger.error('Error in generating hash for token reset, when generating salt', {
-          token,
-          err,
-          salt,
-          tags: ['hashResetToken', 'bcryptError', 'genSalt'],
-        });
-        return reject({ err, data: null });
-      }
-      bcrypt.hash(token, salt, (err, hash) => {
-        if (err) {
-          logger.error('Error in generating hash for token reset, when hashing password', {
-            token,
-            err,
-            hash,
-            tags: ['hashResetToken', 'bcryptError', 'hashPassword'],
-          });
-          return reject({ err, data: null });
-        }
-        return resolve({ err: null, data: hash });
-      });
-    });
-  });
-};
-
-UserSchema.methods.checkResetToken = function checkRT(token) {
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(token, this.auth.reset, (err, data) => {
-      if (err) {
-        return reject({ data: null, err });
-      }
-      if (data === false) {
-        return reject({ data: null, err: false });
-      }
-      return resolve({ data, err: null });
-    });
-  });
-};
+UserSchema.methods.getScoresDescending = function getScores() {
+  return this.taps.sort((a, b) => b.score - a.score)
+}
 
 // #Define Statics Methods (not with big Arrow =>)
 UserSchema.statics.getUserWithEmail = function getUserWithEmail(email, cb) {
@@ -162,5 +120,5 @@ UserSchema.virtual('fullname')
     this.lastname = fullName.substr(fullName.indexOf(' ') + 1);
   });
 
-const User = mongoose.model('User', UserSchema);
+const User = mongoose.model('user', UserSchema);
 module.exports = User;
