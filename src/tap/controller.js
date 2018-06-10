@@ -1,11 +1,13 @@
 const logger = require('../Services/logger');
 const Tap = require('./model');
-const SHA256 = require('crypto-js/sha256')
+// const SHA256 = require('crypto-js/sha256')
+const btoa = require('btoa')
 
 /**
  * Check if the secret is good
  */
-const checkSecret = (secret, score, { firstname, lastname, _id }) => SHA256(`${score}:${firstname}:${lastname}:${_id}`) === secret;
+const checkSecret = (secret, score, { firstname, lastname, _id }) => btoa(`${score}:${firstname}:${lastname}/${_id}`) === secret;
+//SHA256(`${score}:${firstname}:${lastname}/${_id}`) === secret;
 
 /**
  * Save the tap on the user with good format and return the  
@@ -54,9 +56,7 @@ const newTap = ({ secret, score }, user) => {
 };
 
 
-const getTaps = () => {
-  Tap.getTaosSirtDescending();
-};
+const getTaps = () => Tap.getTapsSortDescending();
 
 /**
  * Get all Taps

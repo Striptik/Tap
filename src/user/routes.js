@@ -3,7 +3,7 @@ const { Router } = require('express');
 
 const logger = require('../Services/logger');
 const User = require('./model');
-const { getUserBy, newUser, login, resetPassword } = require('./controller');
+const { newUser, login, getMyScore } = require('./controller');
 const { checkFields } = require('../Services/requestHelper');
 
 const userRouter = Router({ mergeParams: true });
@@ -18,7 +18,7 @@ class UserRouter {
     * New User
     * body: fields to register when signup
     */
-    userRouter.post('/signin', (req, res) => {
+    userRouter.post('/new', (req, res) => {
       // #Body exists? 
       if (typeof req.body === 'undefined' || req.body === null) {
         logger.error('No body provided or empty', {
@@ -100,6 +100,20 @@ class UserRouter {
             data,
           });
           return res.status(500).send({ err, message, data });
+        });
+    });
+    
+    userRouter.get('/myScore', this.passport.authenticate(['jwt'], { session: false }), (req, res) => {
+      getMyScore(req.user)
+        .then(taps => res.status(200).send({ data: taps, message: 'My Scores', err: null }))
+        .catch((error) => {
+          logger.error('Error when trying to retrieve scores', {
+            tags: ['user', 'scoreUser'],
+            error,
+            message,
+            user: req.user,
+          });
+          return res.status(500).send({ err: error, message: 'Unable to retrieve user score', data: null });
         });
     });
   }

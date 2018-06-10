@@ -1,0 +1,22 @@
+<header>
+  <h1 *ngIf="auth.isLoggedIn()">Score table</h1>
+  <div class="info" *ngIf="auth.isLoggedIn()">Here is the list of scores (descending sort)</div>
+
+  <ul class="navbar">
+    <li class="navbar__item" *ngIf="auth.isLoggedIn()">
+      <a class="btn btn--small" routerLink="/me">Play</a>
+    </li>
+    <li class="navbar__item" *ngIf="auth.isLoggedIn()">
+      <a class="btn btn--small" (click)="auth.logout()">Logout</a>
+    </li>
+  </ul>
+</header>
+
+<ul class="scores-list">
+  <li class="scores-list__item" *ngFor="let score of scores">
+    <div *ngIf="score.userId._id === userId" class="score mine">{{score.score}}pts</div>
+    <div *ngIf="score.userId._id !== userId" class="score">{{score.score}}pts</div>
+    <div *ngIf="score.userId._id === userId" class="details mine">{{score.userId.firstname}} {{score.userId.lastname}} / {{ score.createdAt | date :'dd/MM/yyyy hh:mm:ss' }}</div>
+    <div *ngIf="score.userId._id !== userId" class="details">{{score.userId.firstname}} {{score.userId.lastname}} / {{ score.createdAt | date :'dd/MM/yyyy hh:mm:ss' }}</div>
+  </li>
+</ul>

@@ -89,12 +89,14 @@ UserSchema.methods.generateJwt = function generateJwt() {
     email: this.email,
     firstname: this.firstname,
     lastname: this.lastname,
+    taps: this.taps,
     // expiresIn: '10s', // FOR JWT
     exp: parseInt(expiry.getTime() / 1000, 10),
   }, process.env.JWT_SECRET);
 };
 
-UserSchema.methods.getScoresDescending = function getScores() {
+// Get My Scores
+UserSchema.methods.getMyScoreOrderedScore = function getScores() {
   return this.taps.sort((a, b) => b.score - a.score)
 }
 
@@ -102,15 +104,6 @@ UserSchema.methods.getScoresDescending = function getScores() {
 UserSchema.statics.getUserWithEmail = function getUserWithEmail(email, cb) {
   return this.findOne({ email }, cb);
 };
-
-UserSchema.statics.getUsersWithFirstname = function getUsersWithFirstname(firstname, cb) {
-  return this.find({ firstname: new RegExp(firstname, 'i') }, cb);
-};
-
-UserSchema.statics.getUsers = function getUsers(cb) {
-  return this.find({}, cb);
-};
-
 
 // #Virtuals (no persisting in the schema)
 UserSchema.virtual('fullname')

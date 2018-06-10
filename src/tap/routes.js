@@ -15,6 +15,7 @@ class TapRouter {
     /**
      * Save new score in Database
      */
+    
     tapRouter.post('/new', this.passport.authenticate(['jwt'], { session: false }), (req, res) => {
       // #Body exists ?
       if (typeof req.body === 'undefined' || req.body === null) {
@@ -77,7 +78,7 @@ class TapRouter {
 
       // Controller Job
       getTaps()
-        .then(taps => res.status(200).send(taps))
+        .then(taps => res.status(200).send({ data: taps, message: 'All the scores', err: null}))
         .catch(({ err, message, data }) => {
           logger.error('Unable to save the new tap', {
             tags: ['tap', 'newTap', 'create', 'mongoose'],

@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf dist/ && babel  ./ --out-dir dist/ --ignore ./node_modules",
     "dev": "nodemon server.js",
-    "start": "npm run build && nodemon dist/server.js",
+    "start-api": "npm run build && nodemon dist/server.js",
+    "start-client": "cd client/ && npm run start",
+    "start": "npm run start-api & npm run start-client",
     "clean": "rimraf dist/"
   },
   "repository": {
@@ -29,6 +31,7 @@
     "babel-plugin-inline-dotenv": "^1.1.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
+    "btoa": "^1.2.1",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
     "crypto": "^1.0.1",

@@ -31,8 +31,8 @@ limiter({
   path: '*',
   method: 'all',
   lookup: ['connection.remoteAddress'], // controll, add req.user.id
-  total: 20, // 150 request per 
-  expire: 1000 * 60, // 1 minute
+  total: 10, // 150 request per 
+  expire: 1000 * 20, // 1 minute
   onRateLimited: (req, res, next) => {
     logger.info('Rate limited', {
       tags: ['limiteRate', 'limiter', 'DDOS'],
@@ -77,7 +77,7 @@ const init = () => {
   app.use(cookieParser());
 
   // API routes
-  app.use('/', router);
+  app.use('/api', router);
 
   // #Ready to listen
   app.listen(port, () => {

@@ -22,7 +22,7 @@ const TapSchema = new Schema({
   timestamps: true,
 });
 
-UserSchema.statics.getTapsSortDescending = function () {
+TapSchema.statics.getTapsSortDescending = function () {
   return this.find({}).populate('userId').sort({ score: -1}).exec();
 };
 

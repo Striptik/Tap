@@ -47,7 +47,7 @@ const newUser = (({ email, password, firstname, lastname }) =>
     }
 
     // Only alpha (not accent) and space/dash characters are allowed
-    if (!(/^[A-Za-z \-]+$/.test(firstname))) {
+    if (!(/^[A-Za-zéàîêôïöôè \-]+$/.test(firstname))) {
       logger.error('Firstname needs to contain only alphabetic numbers', {
         firstname,
         tags: ['user', 'createUser', 'create', 'validation', 'firstname'],
@@ -60,7 +60,7 @@ const newUser = (({ email, password, firstname, lastname }) =>
     }
 
     // Only alpha (not accent) and space/dash characters are allowed
-    if (!(/^[A-Za-z \-éàîêôïöôè]+$/.test(lastname))) {
+    if (!(/^[A-Za-zéàîêôïöôè \-]+$/.test(lastname))) {
       logger.error('Lastname needs to contain only alphabetic numbers', {
         lastname,
         tags: ['user', 'createUser', 'create', 'validation', 'lastname'],
@@ -119,9 +119,7 @@ const newUser = (({ email, password, firstname, lastname }) =>
         });
       }
 
-      logger.info('User created', {
-        user,
-      });
+      logger.info('User created');
       const token = user.generateJwt();
       return resolve({
         error: null,
@@ -152,6 +150,19 @@ const login = (({ email, password }) =>
           err: new Error(err),
           data: user,
           message: `Error when trying to find the user: ${email}`,
+        });
+      }
+
+      if (!user) {
+        logger.error('No Users find', {
+          email,
+          user,
+          tags: ['user', 'loginError', 'login'],
+        });
+        return reject({
+          err: new Error(err),
+          data: user,
+          message: `No Users find with the email : ${email}`,
         });
       }
       user.checkPassword(password)
@@ -263,9 +274,12 @@ const getUserBy = ((key, value) =>
   })
 );
 
+const getMyScore = (user) => user.getMyScoreOrderedScore();
+
 
 module.exports = {
   newUser,
   getUserBy,
   login,
+  getMyScore,
 };

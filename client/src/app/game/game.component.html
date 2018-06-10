@@ -1,0 +1,22 @@
+<header>
+  <h1 *ngIf="auth.isLoggedIn()">Hello {{ auth.getFirstname() }},</h1>
+  <div class="info" *ngIf="auth.isLoggedIn()">You have 10 seconds to tap. Ready ? Steady ? Tap !</div>
+  
+  <!-- <div class="" *ngIf="auth.getTaps()"></div> -->
+  <ul class="navbar">
+    <li class="navbar__item" *ngIf="auth.isLoggedIn()">
+      <a class="btn btn--small" routerLink="/tap">Scores</a>
+    </li>
+    <li class="navbar__item" *ngIf="auth.isLoggedIn()">
+      <a class="btn btn--small" (click)="auth.logout()">Logout</a>
+    </li>
+  </ul>
+</header>
+
+<div class="game">
+  <img src="assets/tapOff.png" alt="" (click)="tap()" *ngIf="io">
+  <img src="assets/tapOn.png" alt="" (click)="tap()" *ngIf="!io">
+</div>
+<div class="progress-bar">
+  <div id="progress" class="inner"></div>
+</div>
