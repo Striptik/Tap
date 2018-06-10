@@ -14,14 +14,34 @@ export class GameComponent {
   interval = null;
   taps = null;
   io = true;
+  display = 'game';
+  button = 'my taps'
+  sort = 'by score';
+  lastTapId: string;
+
   constructor(private auth: AuthService, private request: RequestService, private router: Router) {
-    if (!auth.isLoggedIn) this.router.navigateByUrl('/');
-    // this.taps = auth.getTaps();
-    // console.log(this.taps);
+
+    if (!auth.isLoggedIn()) this.router.navigateByUrl('/');
+    this.taps = auth.getTaps();
+    this.lastTapId = this.auth.lastTap.tapId;
+  }
+
+  handleDisplay() {
+    this.display = this.display === 'game' ? 'my taps' : 'game';
+    this.button = this.button === 'game' ? 'my taps' : 'game';
+  }
+
+  handleSort() {
+    if (this.sort === 'by date') {
+      this.taps.sort((a: any, b: any) =>  new Date(b.created) - new Date(a.created));
+      this.sort = 'by score';
+    } else {
+      this.taps.sort((a, b) => b.score - a.score)
+      this.sort = 'by date';
+    }
   }
 
   decrease() {
-    console.log('TIME -> ', this.time);
     this.time--;
     if (!this.time) this.finish();
   }
@@ -39,7 +59,7 @@ export class GameComponent {
   }
 
   animate() {
-    document.querySelector('body').style.cssText = `--time: ${this.time * 1000}ms`;
+    document.querySelector('body').style.cssText = `--time: ${(this.time + 0.5) * 1000}ms`;
     document.getElementById('progress').className += ' start';
   }
 
@@ -47,13 +67,11 @@ export class GameComponent {
     clearInterval(this.interval);
     this.request.newScore(this.score).then(
       (newUser) => {
-        console.log('New SCore success ->', newUser);
+        this.auth.lastTap = newUser.taps[0];
+        this.auth.setTaps = newUser.taps;
         this.router.navigateByUrl('/tap');
       },
-      (error) => {
-        console.log('Error New Score ->', error);
-        window.alert('Error when triyng to register the score');
-      }
+      (error) => window.alert('Error when triyng to register the score')
     );
   } 
 }

@@ -9,22 +9,25 @@ import { Router } from '@angular/router';
 })
 export class ScoresComponent {
   
-  scores = [];
-  userId = '';
+  scores: Array<any> = [];
+  userId: string = '';
+  lastTapId: string;
 
   constructor(private request: RequestService, private auth: AuthService, private router: Router) {
-    if (!auth.isLoggedIn) this.router.navigateByUrl('/');
+    if (!auth.isLoggedIn()) this.router.navigateByUrl('/');
+    this.getScores();
+    this.userId = this.auth.getUserId();
+    this.lastTapId = this.auth.lastTap.tapId;
   }
 
   ngOnInit() {
-    this.getScores();
-    this.userId = this.auth.getUserId();
+   
   }
 
 
   getScores(): any  {
     return this.request.getScores()
-      .then(data => this.scores = data)
+      .then(data =>  this.scores = data)
       .catch(error => {
         window.alert('Error : ' + error);
         this.router.navigateByUrl('/me');

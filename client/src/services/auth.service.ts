@@ -34,6 +34,7 @@ export class AuthService {
 
   private token: string = '';
   private infos: UsersInterface = null;
+  public lastTap: any = 0;
 
   constructor(private router: Router) {
     this.infos = this.extractUsersInformations();

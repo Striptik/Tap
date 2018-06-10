@@ -41,11 +41,8 @@ export class RegisterComponent {
       }
       this.request.register(user)
         .then(
-          (data) => {
-            console.log('Register =>', data);
-              this.router.navigateByUrl('/me');
-          },
-          (err) => this.setRequestError(err),
+          () => this.router.navigateByUrl('/me'),
+          (err) => this.setRequestError(err)
         )
     }
   }

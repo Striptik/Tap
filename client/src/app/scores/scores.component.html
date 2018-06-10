@@ -12,11 +12,16 @@
   </ul>
 </header>
 
+
+
+
 <ul class="scores-list">
   <li class="scores-list__item" *ngFor="let score of scores">
-    <div *ngIf="score.userId._id === userId" class="score mine">{{score.score}}pts</div>
+    <div *ngIf="score.userId._id === userId && score._id !== lastTapId" class="score mine">{{score.score}}pts</div>
+    <div *ngIf="score.userId._id === userId && score._id === lastTapId" class="score mine now">{{score.score}}pts</div>
     <div *ngIf="score.userId._id !== userId" class="score">{{score.score}}pts</div>
-    <div *ngIf="score.userId._id === userId" class="details mine">{{score.userId.firstname}} {{score.userId.lastname}} / {{ score.createdAt | date :'dd/MM/yyyy hh:mm:ss' }}</div>
-    <div *ngIf="score.userId._id !== userId" class="details">{{score.userId.firstname}} {{score.userId.lastname}} / {{ score.createdAt | date :'dd/MM/yyyy hh:mm:ss' }}</div>
+    <div *ngIf="score.userId._id === userId && score._id !== lastTapId" class="details mine"> <img src="/assets/user.svg" />{{score.userId.firstname}} {{score.userId.lastname}} || {{ score.createdAt | date :'dd/MM/yyyy hh:mm:ss' }}</div>
+    <div *ngIf="score.userId._id === userId && score._id === lastTapId" class="details mine now"> <img src="/assets/userNow.svg" />{{score.userId.firstname}} {{score.userId.lastname}} || {{ score.createdAt | date :'dd/MM/yyyy hh:mm:ss' }}</div>
+    <div *ngIf="score.userId._id !== userId" class="details">{{score.userId.firstname}} {{score.userId.lastname}} || {{ score.createdAt | date :'dd/MM/yyyy hh:mm:ss' }}</div>
   </li>
 </ul>

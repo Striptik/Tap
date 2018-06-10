@@ -25,18 +25,18 @@ body {
 header {
   padding: 30px 50px;
   text-align: center;
-  box-shadow: 0px 2px 10px 0px rgba(230,230,230,1);
+  box-shadow: 0px 2px 10px 0px rgb(122, 35, 122);
   border-radius: 0 0 25px 25px;
   margin-top: -7px;
 }
 
-header .info {
+header .info, .info {
   text-transform: uppercase;
   color: rgb(148, 148, 148);
   font-size: 11px;
   padding-bottom: 10px;
   border-bottom: solid 1px rgb(245, 245, 245);
-  margin-top: 8px;
+  margin: 14px 0;
 }
 
 /* 
@@ -44,6 +44,7 @@ header .info {
 */
 footer {
   margin-top: 120px;
+  margin-bottom: 30px;
   text-transform: uppercase;
   text-align: center;
   border-top: solid 1px rgb(182, 182, 182);
@@ -153,6 +154,13 @@ label.cgu {
   padding: 5px;
 }
 
+.btn--center {
+  display: block;
+  margin: 30px auto;
+  width: 100px;
+  text-align: center;
+}
+
 .inline-b {
   display: inline-block;
 }
@@ -194,7 +202,7 @@ label.cgu {
 
 #progress.start {
   max-width: 100%;
-  transition: max-width var(--time) ease-in-out;
+  transition: max-width var(--time) 0.5s ease-in-out;
 }
 
 /* 
@@ -216,6 +224,8 @@ label.cgu {
 }
 
 .scores-list .scores-list__item .details {
+  display: flex;
+  align-items: center;
   font-size: 13px;
   color: rgb(153, 153, 153);
 }
@@ -229,4 +239,27 @@ label.cgu {
 .scores-list .scores-list__item .details.mine {
   font-size: 13px;
   color:rgb(122, 35, 122);
+}
+
+.scores-list .scores-list__item .details.mine img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.scores-list .scores-list__item .score.mine.now {
+  font-weight: 700;
+  color: rgb(91,212,86);
+  font-size: 20px
+}
+
+.scores-list .scores-list__item .details.mine.now {
+  font-size: 13px;
+  color:rgb(91,212,86);
+}
+
+.scores-list .scores-list__item .details.mine.now img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
 }

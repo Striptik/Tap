@@ -1,9 +1,12 @@
 <header>
   <h1 *ngIf="auth.isLoggedIn()">Hello {{ auth.getFirstname() }},</h1>
   <div class="info" *ngIf="auth.isLoggedIn()">You have 10 seconds to tap. Ready ? Steady ? Tap !</div>
-  
+
   <!-- <div class="" *ngIf="auth.getTaps()"></div> -->
   <ul class="navbar">
+    <li class="navbar__item" *ngIf="auth.isLoggedIn()">
+      <a class="btn btn--small" (click)="handleDisplay()">{{ button }}</a>
+    </li>
     <li class="navbar__item" *ngIf="auth.isLoggedIn()">
       <a class="btn btn--small" routerLink="/tap">Scores</a>
     </li>
@@ -13,10 +16,24 @@
   </ul>
 </header>
 
-<div class="game">
+<div *ngIf="display === 'game'" class="game">
   <img src="assets/tapOff.png" alt="" (click)="tap()" *ngIf="io">
   <img src="assets/tapOn.png" alt="" (click)="tap()" *ngIf="!io">
 </div>
-<div class="progress-bar">
+<div *ngIf="display === 'game'" class="progress-bar">
   <div id="progress" class="inner"></div>
 </div>
+
+<h3 style='text-align: center' *ngIf="display === 'my taps' && (taps === null || taps.length === 0)">
+  You don't have any scores yet :( <br><br> Make a Tap to view your scores !
+</h3> 
+
+<a *ngIf="display === 'my taps' && taps !== null"  class="btn btn--small btn--center" (click)="handleSort()">{{sort}}</a>
+<ul *ngIf="display === 'my taps' && taps !== null"  class="scores-list">
+    <li class="scores-list__item" *ngFor="let score of taps">
+      <div class="score mine">{{score.score}}pts</div>
+      <div *ngIf="score._id === lastTapId" class="score mine now">{{score.score}}pts</div>
+      <div  class="details mine">{{ score.created | date :'dd/MM/yyyy hh:mm:ss' }}</div>
+      <div *ngIf="score._id === lastTapId" class="details mine now">{{ score.created | date :'dd/MM/yyyy hh:mm:ss' }}</div>
+    </li>
+  </ul>

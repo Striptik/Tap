@@ -26,7 +26,7 @@ export interface ErrorInterface {
   error: {
     data: any,
     message: string,
-    error: object
+    error: any
   }
   status: number;
 }
@@ -71,7 +71,12 @@ export class RequestService {
         this.auth.setToken(token);
         return Promise.resolve(resp.data);
       },
-      (error: ErrorInterface) => Promise.reject(error.error.message)
+      (error: ErrorInterface) => {
+        if (error.error.err.code === 11000) {
+          return Promise.reject('Email Already exists !');
+        }
+        return Promise.reject(error.error.message)
+      }
     );
   }
 
@@ -86,15 +91,12 @@ export class RequestService {
     );
   }
 
-  public newScore(score: number): Promise<object> {
+  public newScore(score: number): Promise<any> {
     const secret = this.createSecret(score);
     const newTap = { secret, score }
     const headers = this.setAuthorization();
     return this.http.post(urls.tap, newTap, headers).toPromise().then(
-      (resp: ResponseInterface) => {
-        this.auth.setTaps(resp.data.taps);
-        return Promise.resolve(resp.data)
-      },
+      (resp: ResponseInterface) => Promise.resolve(resp.data),
       (error: ErrorInterface) => Promise.reject(error.error.message)
     );
   }

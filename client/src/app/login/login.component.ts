@@ -24,10 +24,7 @@ export class LoginComponent {
     if (checkE && checkP) {
       this.request.login({ email: this.email, password: this.password })
         .then(
-          (data) => {
-            console.log('Login => ', data);
-            this.router.navigateByUrl('/me');
-          },
+          (data) => this.router.navigateByUrl('/me'),
           (err) => this.setRequestError(err)
         )
     }
