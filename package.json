@@ -10,6 +10,7 @@
     "start-api": "npm run build && nodemon dist/server.js",
     "start-client": "cd client/ && npm run start",
     "start": "npm run start-api & npm run start-client",
+    "setup": "npm install && cd client/ && npm install",
     "clean": "rimraf dist/"
   },
   "repository": {

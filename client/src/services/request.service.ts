@@ -71,7 +71,7 @@ export class RequestService {
         this.auth.setToken(token);
         return Promise.resolve(resp.data);
       },
-      (error: ErrorInterface) => {
+      (error: any) => {
         if (error.error.err.code === 11000) {
           return Promise.reject('Email Already exists !');
         }

@@ -33,7 +33,7 @@ export class GameComponent {
 
   handleSort() {
     if (this.sort === 'by date') {
-      this.taps.sort((a: any, b: any) =>  new Date(b.created) - new Date(a.created));
+      this.taps.sort((a: any, b: any) =>  +(new Date(b.created)) - (+new Date(a.created)));
       this.sort = 'by score';
     } else {
       this.taps.sort((a, b) => b.score - a.score)

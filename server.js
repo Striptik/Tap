@@ -10,7 +10,6 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const forest = require('forest-express-mongoose');
 const mongoose = require('mongoose');
-const client = require('redis').createClient();
 const path = require('path');
 
 // #Intern Tools
@@ -25,22 +24,25 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 // #Add limite rate
-const limiter = require('express-limiter')(app, client);
+if (process.env.DISABLE_LIMITER === 'NO') {
+  const client = require('redis').createClient();
+  const limiter = require('express-limiter')(app, client);
 
-limiter({
-  path: '*',
-  method: 'all',
-  lookup: ['connection.remoteAddress'], // controll, add req.user.id
-  total: 10, // 150 request per 
-  expire: 1000 * 20, // 1 minute
-  onRateLimited: (req, res, next) => {
-    logger.info('Rate limited', {
-      tags: ['limiteRate', 'limiter', 'DDOS'],
-    });
-    next({ message: 'Rate limit exceeded', status: 429 });
-  },
-});
+  limiter({
+    path: '*',
+    method: 'all',
+    lookup: ['connection.remoteAddress'], // controll, add req.user.id
+    total: 10, // 150 request per 
+    expire: 1000 * 20, // 1 minute
+    onRateLimited: (req, res, next) => {
+      logger.info('Rate limited', {
+        tags: ['limiteRate', 'limiter', 'DDOS'],
+      });
+      next({ message: 'Rate limit exceeded', status: 429 });
+    },
+  });
 
+}
 
 // #App initialisation
 const init = () => {
@@ -58,7 +60,7 @@ const init = () => {
   // #Use path to add views
   app.set('view engine', 'pug');
   app.set('views', path.join(__dirname, 'views'));
-  
+
   // #CORS
   app.use(cors());
 
